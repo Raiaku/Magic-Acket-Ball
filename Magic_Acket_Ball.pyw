@@ -10,9 +10,25 @@ from tkinter import messagebox
 acketz = []
 default_file = os.path.join(os.getcwd(), 'acketz.txt')
 
+class CaseIgnore(object):
+    def __init__(self, s):
+        self.__s = s.lower()
+    def __hash__(self):
+        return hash(self.__s)
+    def __eq__(self, other):
+        # ensure proper comparison between instances of this class
+        try:
+           other = other.__s
+        except (TypeError, AttributeError):
+          try:
+             other = other.lower()
+          except:
+             pass
+        return self.__s == other
+
 def new_answer(answer=None):
     answer = answer or input('-> ')
-    if answer not in acketz:
+    if CaseIgnore(answer) not in acketz:
         acketz.append(answer)
         return True
     else:
@@ -32,7 +48,7 @@ def get_choices_from_file(file=None):
             new_answer(line.strip('\r\n'))
             
 def get_random_acket():
-    acket = acketz[random.randint(0, len(acketz) - 1)]
+    acket = 'Magic Acket Ball Sez: ' + str(acketz[random.randint(0, len(acketz) - 1)])
     clipboard.copy(acket)
     
 def go():
